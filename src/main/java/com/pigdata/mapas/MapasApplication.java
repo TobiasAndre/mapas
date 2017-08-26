@@ -29,5 +29,17 @@ public class MapasApplication {
 		return mv;
 	}
 
+	@RequestMapping("/mapas/gps")
+	public ModelAndView mapaGps(){
+		ModelAndView mv = new ModelAndView("mapas/MapaGPS");
+		return mv;
+	}
+
+	@RequestMapping("/mapas/municipios")
+	public ModelAndView municipiosGPS(){
+		ModelAndView mv = new ModelAndView("mapas/MapaMunicipio");
+		return mv;
+	}
+
 
 }

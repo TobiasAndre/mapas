@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://wwww.thymeleaf.org">
+<head>
+
+    <title>Municipios PR</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+    <style>
+        #mapid{height: 600px;}
+    </style>
+</head>
+<body>
+<div id="mapid"></div>
+<button id="btnMunicipios" value="btnMunicipios">Mostrar Municipios PR</button>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script>
+    var mymap = L.map('mapid').setView([-25.7743,-53.3362],12);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
+        attribution:'&copy; <a href="http://osm.org.copyright">OpenStreamMap</a> contributors'
+
+    }).addTo(mymap);
+    document.getElementById("btnMunicipios").onclick = function(){
+        $(document).ready(function () {
+            $.ajax({
+                url: "/service/municipio/list",
+                dataType: 'json'
+            }).then(function (data) {
+               var geojsonFeature = data;
+
+               function styleMun(){
+                   return {
+                       fillColor: '#1BFBFB',
+                       weight:2,
+                       opacity:1,
+                       color:'white',
+                       dashArray:'3',
+                       fillOpacity:0.7
+                   };
+               };
+
+               for(var i in geojsonFeature){
+                   var geopos = jQuery.parseJSON(geojsonFeature[i]);
+                   if(geopos != null){
+                        L.geoJson(jQuery.parseJSON(geopos.geometry.toString()),
+                            {style:styleMun(),
+                                onEachFeature: function(feature,layer){
+                                layer.bindPopup('<b>Nome:'+geopos.nome + '</b>');
+                            }}
+                        ).addTo(mymap);
+                   }
+               }
+            })
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 package com.pigdata.mapas;
 
+import com.google.gson.Gson;
+import com.pigdata.mapas.model.Contorno;
 import com.pigdata.mapas.model.Coordenada;
 import com.pigdata.mapas.model.Coordenada2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +47,19 @@ public class Services {
 
         return coordenadas;
     }
+
+    @RequestMapping("/gps/list")
+    public List<String> gpsList(){
+        String sql = " select name,ST_asgeojson(geom) from contorno ";
+        List<String> contornosList = jdbcTemplate.query(sql, (rs, i) -> new Gson().toJson(new Contorno(rs.getString(1),rs.getString(2))));
+        return contornosList;
+    }
+
+    @RequestMapping("/municipio/list")
+    public List<String> municipioList(){
+        String sql = " select nome,ST_asgeojson(geom) from municipio where geocodigo like ('41%') ";
+        List<String> contornosList = jdbcTemplate.query(sql, (rs, i) -> new Gson().toJson(new Contorno(rs.getString(1),rs.getString(2))));
+        return contornosList;
+    }
+
 }
